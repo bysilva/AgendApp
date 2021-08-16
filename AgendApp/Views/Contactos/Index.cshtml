@@ -1,0 +1,72 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Lista de contactos</h1>
+
+<p class="text-danger">@ViewBag.ErrorMessage</p>
+
+
+<div class="card mb-3">
+    <div class="card-header">
+        Agregar nuevo contacto
+    </div>
+    <div class="card-body">
+        <form id="frmSubmit">
+            <div class="form-group">
+                <input type="text" value="" placeholder="Nombre" class="form-control" id="txtNombre" />
+            </div>
+            <div class="form-group">
+                <input type="text" value="" placeholder="Telefono" class="form-control" id="txtTelefono" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" id="btnSave" />
+            </div>
+        </form>
+    </div>
+</div>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Telefono</th>
+        </tr>
+    </thead>
+    <tbody id="output"></tbody>
+</table>
+@section Scripts{
+    <script>
+        $.ajax({
+            method: "GET",
+            url: "Contactos/GetContactos",
+            success: function (response) {
+                $.each(response, function (index, contacto) {
+                    $("#output").append("<tr><td>" + contacto.nombre + "</td><td>" + contacto.telefono + "</td></tr>");
+                })
+            }
+        })
+        $(document).ready(function () {
+            $("#btnSave").click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    method: "POST",
+                    url: "Contactos/AddContacto",
+                    data: {
+                        Nombre: $("#txtNombre").val(),
+                        Telefono: $("#txtTelefono").val(),
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        ShowSnackbar(snacktype.SUCCESS, snackposition.TOPRIGHT, data);
+                        $("#frmSubmit").submit();
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(xhr);
+                        ShowSnackbar(snacktype.ERROR, snackposition.TOPRIGHT, xhr.responseJSON);
+                    }
+                })
+            })
+        })
+    </script>
+}
