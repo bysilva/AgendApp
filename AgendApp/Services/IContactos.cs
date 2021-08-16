@@ -10,5 +10,8 @@ namespace AgendApp.Services
     {
         List<ContactoModel> GetContactos();
         int AddContacto(ContactoModel contacto);
+        bool UpdateContacto(ContactoModel contacto);
+
+        bool RemoveContacto(ContactoModel contacto);
     }
 }
